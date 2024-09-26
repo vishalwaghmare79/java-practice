@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        #calculator {
+            margin: 20px;
+        }
+
+        input {
+            padding: 5px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        textarea{
+            width: 100%;
+        }
+
+        button {
+            padding: 10px 30px;
+            background-color: #0074d9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin: 10px auto 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        tfoot {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Calculator</h1>
+    <div id="calculator">
+        <textarea id="input" rows="5" placeholder="Enter calculations in the format '30*10' and press Enter to add a new line"></textarea>
+        <button id="calculate">Calculate</button>
+        <button id="copy">Copy Results</button>
+        <table id="results">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>Total</td>
+                    <td id="total">0</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <script>
+        document.getElementById("calculate").addEventListener("click", function () {
+            calculate();
+        });
+
+        document.getElementById("copy").addEventListener("click", function () {
+            copyResults();
+        });
+
+        document.getElementById("input").addEventListener("keydown", function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                calculate();
+            }
+        });
+
+        function calculate() {
+            const input = document.getElementById("input").value;
+            const calculations = input.split('\n');
+            const resultsTable = document.querySelector("#results tbody");
+            resultsTable.innerHTML = "";
+    
+            let total = 0;
+    
+            calculations.forEach(calculation => {
+                const [before, after] = calculation.split('*');
+                if (before && after) {
+                    total += parseFloat(after);
+                    const newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td>${before}</td>
+                        <td>${after}</td>
+                    `;
+                    resultsTable.appendChild(newRow);
+                }
+            });
+    
+            document.getElementById("total").textContent = total;
+        }
+
+        function copyResults() {
+            const results = document.getElementById("results").innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = results;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Results copied to clipboard');
+        }
+    </script>
+</body>
+</html>
